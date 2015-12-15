@@ -11,9 +11,6 @@ import com.fpadilha.patest.R;
 import com.fpadilha.patest.helpers.DataHolder;
 import com.fpadilha.patest.utils.Consts;
 import com.fpadilha.patest.utils.DialogUtils;
-import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
@@ -50,26 +47,26 @@ public class SignInActivity extends BaseActivity {
                 if (validate()) {
 
                     // Sign in application with user
-                    QBUser qbUser = new QBUser(login.getText().toString(), password.getText().toString());
-                    QBUsers.signIn(qbUser, new QBEntityCallbackImpl<QBUser>() {
-                        @Override
-                        public void onSuccess(QBUser qbUser, Bundle bundle) {
-                            setResult(RESULT_OK);
-
-                            DataHolder.getDataHolder().setSignInQbUser(qbUser);
-                            DataHolder.getDataHolder().setSignInUserPassword(password.getText().toString());
-
-                            startActivity(new Intent(context, UpdateUserActivity.class));
-                            finish();
-                        }
-
-                        @Override
-                        public void onError(List<String> errors) {
-                            onThread = false;
-                            publishProgress();
-                            DialogUtils.showLong(context, errors.get(0));
-                        }
-                    });
+//                    QBUser qbUser = new QBUser(login.getText().toString(), password.getText().toString());
+//                    QBUsers.signIn(qbUser, new QBEntityCallbackImpl<QBUser>() {
+//                        @Override
+//                        public void onSuccess(QBUser qbUser, Bundle bundle) {
+//                            setResult(RESULT_OK);
+//
+//                            DataHolder.getDataHolder().setSignInQbUser(qbUser);
+//                            DataHolder.getDataHolder().setSignInUserPassword(password.getText().toString());
+//
+//                            startActivity(new Intent(context, UpdateUserActivity.class));
+//                            finish();
+//                        }
+//
+//                        @Override
+//                        public void onError(List<String> errors) {
+//                            onThread = false;
+//                            publishProgress();
+//                            DialogUtils.showLong(context, errors.get(0));
+//                        }
+//                    });
                 }
                 break;
             case R.id.signUp:

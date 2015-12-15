@@ -10,17 +10,14 @@ import android.widget.ProgressBar;
 
 import com.fpadilha.patest.R;
 import com.fpadilha.patest.helpers.DataHolder;
+import com.fpadilha.patest.models.QBUser;
+import com.fpadilha.patest.models.Session;
+import com.fpadilha.patest.models.response.BaseResponse;
+import com.fpadilha.patest.models.response.CreateSessionResponse;
+import com.fpadilha.patest.services.CreateSessionTask;
+import com.fpadilha.patest.services.TaskCallback;
 import com.fpadilha.patest.utils.Consts;
 import com.fpadilha.patest.utils.DialogUtils;
-import com.quickblox.content.QBContent;
-import com.quickblox.content.model.QBFile;
-import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.core.QBSettings;
-import com.quickblox.auth.QBAuth;
-import com.quickblox.auth.model.QBSession;
-import com.quickblox.core.request.QBPagedRequestBuilder;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +26,11 @@ import static com.fpadilha.patest.utils.Consts.APP_ID;
 import static com.fpadilha.patest.utils.Consts.AUTH_KEY;
 import static com.fpadilha.patest.utils.Consts.AUTH_SECRET;
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends Activity implements TaskCallback {
 
     private Context context;
     private ProgressBar progressBar;
+    private CreateSessionTask createSessionTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,26 +48,32 @@ public class SplashActivity extends Activity {
     }
 
     private void afterView() {
+        createSession();
         // Initialize QuickBlox application with credentials.
-        QBSettings.getInstance().fastConfigInit(APP_ID, AUTH_KEY, AUTH_SECRET);
+//        QBSettings.getInstance().fastConfigInit(APP_ID, AUTH_KEY, AUTH_SECRET);
 
+//        QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
+//            @Override
+//            public void onSuccess(QBSession qbSession, Bundle bundle) {
+////                DataHolder.getDataHolder().setSignInUserId(qbSession.getUserId());
+//
+////                getFileList();
+//                startSignIn();
+//            }
+//
+//            @Override
+//            public void onError(List<String> errors) {
+//                // print errors that came from server
+//                DialogUtils.showLong(context, errors.get(0));
+//                progressBar.setVisibility(View.INVISIBLE);
+//            }
+//        });
+    }
+
+    private void createSession() {
         // Create QuickBlox session
-        QBAuth.createSession(new QBEntityCallbackImpl<QBSession>() {
-            @Override
-            public void onSuccess(QBSession qbSession, Bundle bundle) {
-//                DataHolder.getDataHolder().setSignInUserId(qbSession.getUserId());
-
-//                getFileList();
-                startSignIn();
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                // print errors that came from server
-                DialogUtils.showLong(context, errors.get(0));
-                progressBar.setVisibility(View.INVISIBLE);
-            }
-        });
+        createSessionTask = new CreateSessionTask();
+        createSessionTask.start(this);
     }
 
 //    private void getFileList() {
@@ -103,4 +107,22 @@ public class SplashActivity extends Activity {
         finish();
     }
 
+    @Override
+    public void onSuccess(BaseResponse response) {
+        if (response instanceof CreateSessionResponse) {
+
+            Session session = ((CreateSessionResponse) response).getSession();
+            //TODO: gravar token
+            session.getToken();
+
+            //TODO: call getFileList
+
+            startSignIn();
+        }
+    }
+
+    @Override
+    public void onFailed(String error) {
+
+    }
 }

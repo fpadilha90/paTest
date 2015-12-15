@@ -10,9 +10,6 @@ import android.widget.ProgressBar;
 import com.fpadilha.patest.R;
 import com.fpadilha.patest.helpers.DataHolder;
 import com.fpadilha.patest.utils.DialogUtils;
-import com.quickblox.core.QBEntityCallbackImpl;
-import com.quickblox.users.QBUsers;
-import com.quickblox.users.model.QBUser;
 
 import java.util.List;
 
@@ -55,53 +52,53 @@ public class SignUpActivity extends BaseActivity {
         if (validate()) {
             onThread = true;
             publishProgress();
-            QBUser user = new QBUser(login.getText().toString(), password.getText().toString());
-
-            QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
-                @Override
-                public void onSuccess(QBUser user, Bundle args) {
-                    setResult(RESULT_OK);
-
-                    DataHolder.getDataHolder().setSignInQbUser(user);
-                    DataHolder.getDataHolder().setSignInUserPassword(password.getText().toString());
-
-                    signIn(user);
-
-                }
-
-                @Override
-                public void onError(List<String> errors) {
-                    onThread = false;
-                    publishProgress();
-                    DialogUtils.showLong(context, errors.get(0));
-                }
-            });
+//            QBUser user = new QBUser(login.getText().toString(), password.getText().toString());
+//
+//            QBUsers.signUp(user, new QBEntityCallbackImpl<QBUser>() {
+//                @Override
+//                public void onSuccess(QBUser user, Bundle args) {
+//                    setResult(RESULT_OK);
+//
+//                    DataHolder.getDataHolder().setSignInQbUser(user);
+//                    DataHolder.getDataHolder().setSignInUserPassword(password.getText().toString());
+//
+//                    signIn(user);
+//
+//                }
+//
+//                @Override
+//                public void onError(List<String> errors) {
+//                    onThread = false;
+//                    publishProgress();
+//                    DialogUtils.showLong(context, errors.get(0));
+//                }
+//            });
         }
     }
 
-    private void signIn(QBUser qbUser) {
-        QBUsers.signIn(qbUser, new QBEntityCallbackImpl<QBUser>() {
-            @Override
-            public void onSuccess(QBUser qbUser, Bundle bundle) {
-                setResult(RESULT_OK);
-
-                DataHolder.getDataHolder().setSignInQbUser(qbUser);
-                DataHolder.getDataHolder().setSignInUserPassword(password.getText().toString());
-
-                DialogUtils.show(context, getString(R.string.success_user_signup));
-                startActivity(new Intent(context, UpdateUserActivity.class));
-                finish();
-            }
-
-            @Override
-            public void onError(List<String> errors) {
-                onThread = false;
-                publishProgress();
-                DialogUtils.showLong(context, errors.get(0));
-                finish();
-            }
-        });
-    }
+//    private void signIn(QBUser qbUser) {
+//        QBUsers.signIn(qbUser, new QBEntityCallbackImpl<QBUser>() {
+//            @Override
+//            public void onSuccess(QBUser qbUser, Bundle bundle) {
+//                setResult(RESULT_OK);
+//
+//                DataHolder.getDataHolder().setSignInQbUser(qbUser);
+//                DataHolder.getDataHolder().setSignInUserPassword(password.getText().toString());
+//
+//                DialogUtils.show(context, getString(R.string.success_user_signup));
+//                startActivity(new Intent(context, UpdateUserActivity.class));
+//                finish();
+//            }
+//
+//            @Override
+//            public void onError(List<String> errors) {
+//                onThread = false;
+//                publishProgress();
+//                DialogUtils.showLong(context, errors.get(0));
+//                finish();
+//            }
+//        });
+//    }
 
     private boolean validate() {
         boolean valid = true;
