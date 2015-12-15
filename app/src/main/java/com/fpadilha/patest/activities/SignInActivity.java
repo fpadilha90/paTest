@@ -9,12 +9,17 @@ import android.widget.ProgressBar;
 
 import com.fpadilha.patest.R;
 import com.fpadilha.patest.helpers.DataHolder;
+import com.fpadilha.patest.models.User;
+import com.fpadilha.patest.models.response.BaseResponse;
+import com.fpadilha.patest.models.response.SignInResponse;
+import com.fpadilha.patest.services.SignInTask;
+import com.fpadilha.patest.services.TaskCallback;
 import com.fpadilha.patest.utils.Consts;
 import com.fpadilha.patest.utils.DialogUtils;
 
 import java.util.List;
 
-public class SignInActivity extends BaseActivity {
+public class SignInActivity extends BaseActivity implements TaskCallback {
 
     private EditText login;
     private EditText password;
@@ -22,6 +27,8 @@ public class SignInActivity extends BaseActivity {
     private Button signUp;
     private ProgressBar progressBar;
     private boolean onThread;
+
+    private SignInTask signInTask;
 
     @Override
     public void onCreate(Bundle savedInstanceBundle) {
@@ -46,27 +53,13 @@ public class SignInActivity extends BaseActivity {
             case R.id.signIn:
                 if (validate()) {
 
+                    User user = new User.Builder()
+                            .setLogin(login.getText().toString())
+                            .setPassword(password.getText().toString()).build();
+
                     // Sign in application with user
-//                    QBUser qbUser = new QBUser(login.getText().toString(), password.getText().toString());
-//                    QBUsers.signIn(qbUser, new QBEntityCallbackImpl<QBUser>() {
-//                        @Override
-//                        public void onSuccess(QBUser qbUser, Bundle bundle) {
-//                            setResult(RESULT_OK);
-//
-//                            DataHolder.getDataHolder().setSignInQbUser(qbUser);
-//                            DataHolder.getDataHolder().setSignInUserPassword(password.getText().toString());
-//
-//                            startActivity(new Intent(context, UpdateUserActivity.class));
-//                            finish();
-//                        }
-//
-//                        @Override
-//                        public void onError(List<String> errors) {
-//                            onThread = false;
-//                            publishProgress();
-//                            DialogUtils.showLong(context, errors.get(0));
-//                        }
-//                    });
+                    signInTask = new SignInTask();
+                    signInTask.start(this, user);
                 }
                 break;
             case R.id.signUp:
@@ -95,5 +88,42 @@ public class SignInActivity extends BaseActivity {
         login.setEnabled(!onThread);
         password.setEnabled(!onThread);
         signUp.setEnabled(!onThread);
+    }
+
+    @Override public void onSuccess(BaseResponse response) {
+        if (response instanceof SignInResponse) {
+
+            SignInResponse signInResponse = (SignInResponse) response;
+            User user = new User.Builder().setId(signInResponse.getId())
+                    .setOwnerId(signInResponse.getOwnerId())
+                    .setLogin(signInResponse.getLogin())
+                    .setPassword(password.getText().toString())
+                    .setBlobId(signInResponse.getBlobId())
+                    .setCreatedAt(signInResponse.getCreatedAt())
+                    .setUpdatedAt(signInResponse.getUpdatedAt())
+                    .setFullName(signInResponse.getFullName())
+                    .setEmail(signInResponse.getEmail())
+                    .setPhone(signInResponse.getPhone())
+                    .setWebsite(signInResponse.getWebsite())
+                    .setCustomData(signInResponse.getCustomData())
+                    .setExternalUserId(signInResponse.getExternalUserId())
+                    .setFacebookId(signInResponse.getFacebookId())
+                    .setTwitterId(signInResponse.getTwitterId())
+                    .setLastRequestAt(signInResponse.getLastRequestAt())
+                    .setTagList(signInResponse.getTagList())
+                    .setUserTags(signInResponse.getUserTags()).build();
+
+            DataHolder.getDataHolder().setSignInUser(user);
+
+            startActivity(new Intent(context, UpdateUserActivity.class));
+            finish();
+
+        }
+    }
+
+    @Override public void onFailed(String error) {
+        onThread = false;
+        publishProgress();
+        DialogUtils.showLong(context, error);
     }
 }

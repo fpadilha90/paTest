@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.fpadilha.patest.R;
 import com.fpadilha.patest.helpers.DataHolder;
+import com.fpadilha.patest.models.User;
 import com.fpadilha.patest.utils.DialogUtils;
 import com.fpadilha.patest.utils.GetImageFileTask;
 import com.fpadilha.patest.utils.ImageHelper;
@@ -46,6 +47,7 @@ public class UpdateUserActivity extends BaseActivity implements OnGetImageFileLi
     private CollapsingToolbarLayout collapsingToolbar;
 
     private ImageHelper imageHelper;
+    private User user;
 
     @Override
     public void onCreate(Bundle savedInstanceBundle) {
@@ -119,12 +121,13 @@ public class UpdateUserActivity extends BaseActivity implements OnGetImageFileLi
     }
 
     private void fillAllFields() {
-//        collapsingToolbar.setTitle(DataHolder.getDataHolder().getSignInUserLogin());
-//
-//        email.setText(DataHolder.getDataHolder().getSignInUserEmail());
-//        fullName.setText(DataHolder.getDataHolder().getSignInUserFullName());
-//        phone.setText(DataHolder.getDataHolder().getSignInUserPhone());
-//        webSite.setText(DataHolder.getDataHolder().getSignInUserWebSite());
+        user = DataHolder.getDataHolder().getSignInUser();
+        collapsingToolbar.setTitle(user.getLogin());
+
+        email.setText(user.getEmail());
+        fullName.setText(user.getFullName());
+        phone.setText(user.getPhone());
+        webSite.setText(user.getWebsite());
 
     }
 

@@ -1,17 +1,15 @@
 package com.fpadilha.patest.helpers;
 
 
-import com.fpadilha.patest.models.QBUser;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.fpadilha.patest.models.User;
 
 public class DataHolder {
 
     private static DataHolder dataHolder;
 //    private List<QBUser> qbUsersList = new ArrayList<QBUser>();
-    private QBUser signInQbUser;
+    private User signInUser;
     private String token;
+    private String signInUserPassword;
 //    private List<QBFile> qbFileList;
 
     public static synchronized DataHolder getDataHolder() {
@@ -21,13 +19,22 @@ public class DataHolder {
         return dataHolder;
     }
 
-    public void setSignInQbUser(QBUser signInQbUser) {
-        this.signInQbUser = signInQbUser;
+    public User getSignInUser() {
+        return signInUser;
     }
 
-    public QBUser getSignInQbUser() {
-        return signInQbUser;
+    public void setSignInUser(User signInUser) {
+        this.signInUser = signInUser;
     }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     //
 //    public void setQbFileList(List<QBFile> qbFileList) {
 //        this.qbFileList = qbFileList;

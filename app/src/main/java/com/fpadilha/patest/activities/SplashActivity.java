@@ -4,27 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.fpadilha.patest.R;
 import com.fpadilha.patest.helpers.DataHolder;
-import com.fpadilha.patest.models.QBUser;
 import com.fpadilha.patest.models.Session;
 import com.fpadilha.patest.models.response.BaseResponse;
 import com.fpadilha.patest.models.response.CreateSessionResponse;
 import com.fpadilha.patest.services.CreateSessionTask;
 import com.fpadilha.patest.services.TaskCallback;
-import com.fpadilha.patest.utils.Consts;
-import com.fpadilha.patest.utils.DialogUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.fpadilha.patest.utils.Consts.APP_ID;
-import static com.fpadilha.patest.utils.Consts.AUTH_KEY;
-import static com.fpadilha.patest.utils.Consts.AUTH_SECRET;
 
 public class SplashActivity extends Activity implements TaskCallback {
 
@@ -112,8 +101,7 @@ public class SplashActivity extends Activity implements TaskCallback {
         if (response instanceof CreateSessionResponse) {
 
             Session session = ((CreateSessionResponse) response).getSession();
-            //TODO: gravar token
-            session.getToken();
+            DataHolder.getDataHolder().setToken(session.getToken());
 
             //TODO: call getFileList
 

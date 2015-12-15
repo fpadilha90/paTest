@@ -67,9 +67,7 @@ public class CreateSessionTask {
 
                 request.setUser(user);
 
-                CreateSessionResponse response = restClient.createSession(request);
-
-                return response;
+                return restClient.createSession(request);
             }
 
             @Override
@@ -96,7 +94,6 @@ public class CreateSessionTask {
             mac.init(signingKey);
             byte[] rawHmac = mac.doFinal(signatureParams.getBytes());
             result = new String(new Hex().encode(rawHmac), "UTF-8");
-//            result = Base64.encodeToString(rawHmac, Base64.NO_WRAP);
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
             e.printStackTrace();

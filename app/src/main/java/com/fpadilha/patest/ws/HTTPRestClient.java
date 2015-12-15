@@ -1,7 +1,12 @@
 package com.fpadilha.patest.ws;
 
+import com.fpadilha.patest.helpers.DataHolder;
 import com.fpadilha.patest.models.request.CreateSessionRequest;
+import com.fpadilha.patest.models.request.SignInRequest;
+import com.fpadilha.patest.models.request.SignUpRequest;
 import com.fpadilha.patest.models.response.CreateSessionResponse;
+import com.fpadilha.patest.models.response.SignInResponse;
+import com.fpadilha.patest.models.response.SignUpResponse;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -13,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Scanner;
@@ -23,11 +29,11 @@ import java.util.Scanner;
 public class HTTPRestClient implements RestClient {
 
     private static final String URL_BASE = "https://api.quickblox.com";
-    private static final String URL_SESSION = URL_BASE +  "/session.json";
-    private static final String URL_LOGIN = URL_BASE +  "/login.json";
-    private static final String URL_USERS = URL_BASE +  "/users.json";
-    private static final String URL_USER = URL_BASE +  "/users/%d.json";
-    private static final String URL_DATA = URL_BASE +  "/data";
+    private static final String URL_SESSION = URL_BASE + "/session.json";
+    private static final String URL_LOGIN = URL_BASE + "/login.json";
+    private static final String URL_USERS = URL_BASE + "/users.json";
+    private static final String URL_USER = URL_BASE + "/users/%d.json";
+    private static final String URL_DATA = URL_BASE + "/data";
 
     private static final String HEADER_CONTENT_TYPE_PARAM = "Content-Type";
     private static final String HEADER_QB_TOKEN_PARAM = "QB-Token";
@@ -52,12 +58,8 @@ public class HTTPRestClient implements RestClient {
 
             urlConnection = (HttpURLConnection)
                     url.openConnection();
-            urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
-            urlConnection.setReadTimeout(DATA_RETRIEVAL_TIMEOUT);
-            urlConnection.setRequestMethod(POST);
-            urlConnection.setRequestProperty(HEADER_CONTENT_TYPE_PARAM, HEADER_CONTENT_TYPE_VALUE);
-            urlConnection.setRequestProperty(HEADER_QB_API_VERSION_PARAM, HEADER_QB_API_VERSION_VALUE);
 
+            setHeader(urlConnection, POST, false);
 
             String str = new Gson().toJson(request);
             byte[] data = str.getBytes("UTF-8");
@@ -79,8 +81,6 @@ public class HTTPRestClient implements RestClient {
                     urlConnection.getInputStream());
             return new Gson().fromJson(getResponseText(in), CreateSessionResponse.class);
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -90,6 +90,108 @@ public class HTTPRestClient implements RestClient {
         }
 
         return null;
+
+    }
+
+
+    @Override public SignUpResponse signUp(SignUpRequest request) {
+
+        HttpURLConnection urlConnection = null;
+        DataOutputStream printout;
+        try {
+            URL url = new URL(URL_USERS);
+
+            urlConnection = (HttpURLConnection)
+                    url.openConnection();
+
+            setHeader(urlConnection, POST, true);
+
+            String str = new Gson().toJson(request);
+            byte[] data = str.getBytes("UTF-8");
+            printout = new DataOutputStream(urlConnection.getOutputStream());
+            printout.write(data);
+            printout.flush();
+            printout.close();
+
+
+            int statusCode = urlConnection.getResponseCode();
+            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                // handle unauthorized (if service requires user login)
+            } else if (statusCode != HttpURLConnection.HTTP_OK) {
+                // handle any other errors, like 404, 500,..
+            }
+
+            // create JSON object from content
+            InputStream in = new BufferedInputStream(
+                    urlConnection.getInputStream());
+            return new Gson().fromJson(getResponseText(in), SignUpResponse.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+
+        return null;
+    }
+
+
+    @Override public SignInResponse signIn(SignInRequest request) {
+
+        HttpURLConnection urlConnection = null;
+        DataOutputStream printout;
+        try {
+            URL url = new URL(URL_USERS);
+
+            urlConnection = (HttpURLConnection)
+                    url.openConnection();
+
+            setHeader(urlConnection, POST, true);
+
+            String str = new Gson().toJson(request);
+            byte[] data = str.getBytes("UTF-8");
+            printout = new DataOutputStream(urlConnection.getOutputStream());
+            printout.write(data);
+            printout.flush();
+            printout.close();
+
+
+            int statusCode = urlConnection.getResponseCode();
+            if (statusCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                // handle unauthorized (if service requires user login)
+            } else if (statusCode != HttpURLConnection.HTTP_OK) {
+                // handle any other errors, like 404, 500,..
+            }
+
+            // create JSON object from content
+            InputStream in = new BufferedInputStream(
+                    urlConnection.getInputStream());
+            return new Gson().fromJson(getResponseText(in), SignInResponse.class);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+
+        return null;
+
+    }
+
+    private void setHeader(HttpURLConnection urlConnection, String method, boolean token) throws ProtocolException {
+        urlConnection.setConnectTimeout(CONNECTION_TIMEOUT);
+        urlConnection.setReadTimeout(DATA_RETRIEVAL_TIMEOUT);
+        urlConnection.setRequestMethod(method);
+        urlConnection.setRequestProperty(HEADER_CONTENT_TYPE_PARAM, HEADER_CONTENT_TYPE_VALUE);
+        urlConnection.setRequestProperty(HEADER_QB_API_VERSION_PARAM, HEADER_QB_API_VERSION_VALUE);
+
+        if (token){
+            urlConnection.setRequestProperty(HEADER_QB_TOKEN_PARAM, DataHolder.getDataHolder().getToken());
+        }
 
     }
 
