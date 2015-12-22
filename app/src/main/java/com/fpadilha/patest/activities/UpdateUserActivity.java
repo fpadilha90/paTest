@@ -19,17 +19,27 @@ import android.widget.ProgressBar;
 import com.fpadilha.patest.R;
 import com.fpadilha.patest.helpers.DataHolder;
 import com.fpadilha.patest.models.User;
+import com.fpadilha.patest.models.response.BaseResponse;
+import com.fpadilha.patest.models.response.UpdateUserResponse;
+import com.fpadilha.patest.services.DownloadFileCallback;
+import com.fpadilha.patest.services.DownloadFileTask;
+import com.fpadilha.patest.services.TaskCallback;
+import com.fpadilha.patest.services.UpdateUserTask;
 import com.fpadilha.patest.utils.DialogUtils;
 import com.fpadilha.patest.utils.GetImageFileTask;
 import com.fpadilha.patest.utils.ImageHelper;
 import com.fpadilha.patest.utils.OnGetImageFileListener;
+import com.quickblox.content.QBContent;
+import com.quickblox.content.model.QBFile;
+import com.quickblox.core.QBEntityCallbackImpl;
+import com.quickblox.core.QBProgressCallback;
 
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
 
-public class UpdateUserActivity extends BaseActivity implements OnGetImageFileListener {
+public class UpdateUserActivity extends BaseActivity implements OnGetImageFileListener, TaskCallback, DownloadFileCallback {
 
     private ProgressBar progressBar;
     private ProgressBar progressBarImage;
@@ -48,6 +58,8 @@ public class UpdateUserActivity extends BaseActivity implements OnGetImageFileLi
 
     private ImageHelper imageHelper;
     private User user;
+    private UpdateUserTask updateUserTask;
+    private DownloadFileTask downloadFileTask;
 
     @Override
     public void onCreate(Bundle savedInstanceBundle) {
@@ -65,41 +77,16 @@ public class UpdateUserActivity extends BaseActivity implements OnGetImageFileLi
     }
 
     private void refreshAvatar() {
-//        Integer userProfilePictureID = DataHolder.getDataHolder().getSignInQbUser().getFileId();
-//
-//        if (userProfilePictureID != null) {
-//            progressBarImage.setVisibility(View.VISIBLE);
-//            changeAvatar.setEnabled(false);
-//            QBContent.downloadFileTask(userProfilePictureID, new QBEntityCallbackImpl<InputStream>() {
-//                @Override
-//                public void onSuccess(InputStream inputStream, Bundle params) {
-//                    new AsyncTask<InputStream, Void, Bitmap>() {
-//                        @Override
-//                        protected Bitmap doInBackground(InputStream... params) {
-//                            return BitmapFactory.decodeStream(params[0]);
-//                        }
-//
-//                        @Override
-//                        protected void onPostExecute(Bitmap bitmap) {
-//                            photo.setImageBitmap(bitmap);
-//                            progressBarImage.setVisibility(View.GONE);
-//                            changeAvatar.setEnabled(true);
-//                        }
-//                    }.execute(inputStream);
-//                }
-//
-//                @Override
-//                public void onError(List<String> errors) {
-//                    progressBarImage.setVisibility(View.GONE);
-//                    changeAvatar.setEnabled(true);
-//                }
-//            }, new QBProgressCallback() {
-//                @Override
-//                public void onProgressUpdate(int progress) {
-//
-//                }
-//            });
-//        }
+        Integer userProfilePictureID = DataHolder.getDataHolder().getSignInUser().getBlobId();
+
+        if (userProfilePictureID != null) {
+            progressBarImage.setVisibility(View.VISIBLE);
+            changeAvatar.setEnabled(false);
+
+            downloadFileTask = new DownloadFileTask();
+            downloadFileTask.start(this, userProfilePictureID);
+
+        }
     }
 
     private void inflateViews() {
@@ -152,44 +139,18 @@ public class UpdateUserActivity extends BaseActivity implements OnGetImageFileLi
                     publishProgress();
 
                     // Update user
-//                    QBUser qbUser = new QBUser();
-//                    if (DataHolder.getDataHolder().getSignInUserId() != -1) {
-//                        qbUser.setId(DataHolder.getDataHolder().getSignInUserId());
-//                    }
-//                    qbUser.setLogin(DataHolder.getDataHolder().getSignInUserLogin());
-//
-//                    if (!"".equals(password.getText().toString())) {
-//                        qbUser.setPassword(password.getText().toString());
-//                        qbUser.setOldPassword(DataHolder.getDataHolder().getSignInUserOldPassword());
-//                    }
-//                    qbUser.setFullName(fullName.getText().toString());
-//                    qbUser.setEmail(email.getText().toString());
-//                    qbUser.setPhone(phone.getText().toString());
-//                    qbUser.setWebsite(webSite.getText().toString());
-//
-//                    QBUsers.updateUser(qbUser, new QBEntityCallbackImpl<QBUser>() {
-//                        @Override
-//                        public void onSuccess(QBUser qbUser, Bundle bundle) {
-//
-//                            onThread = false;
-//                            publishProgress();
-//
-//                            DataHolder.getDataHolder().setSignInQbUser(qbUser);
-//                            if (!"".equals(password.getText().toString())) {
-//                                DataHolder.getDataHolder().setSignInUserPassword(
-//                                        password.getText().toString());
-//                            }
-//                            DialogUtils.showLong(context, getResources().getString(
-//                                    R.string.success_user_updated));
-//                        }
-//
-//                        @Override
-//                        public void onError(List<String> strings) {
-//                            onThread = false;
-//                            publishProgress();
-//                            DialogUtils.showLong(context, strings.get(0));
-//                        }
-//                    });
+                    User user = DataHolder.getDataHolder().getSignInUser();
+                    if (!"".equals(password.getText().toString())) {
+                        user.setOldPassword(user.getOldPassword());
+                        user.setPassword(password.getText().toString());
+                    }
+                    user.setFullName(fullName.getText().toString());
+                    user.setEmail(email.getText().toString());
+                    user.setPhone(phone.getText().toString());
+                    user.setWebsite(webSite.getText().toString());
+
+                    updateUserTask = new UpdateUserTask();
+                    updateUserTask.start(this, user);
                 }
                 break;
             case R.id.changeAvatar:
@@ -226,47 +187,84 @@ public class UpdateUserActivity extends BaseActivity implements OnGetImageFileLi
     private void uploadSelectedImage(File imageFile) {
 
         // Upload new file
-//        QBContent.uploadFileTask(imageFile, false, null, new QBEntityCallbackImpl<QBFile>() {
-//            @Override
-//            public void onSuccess(QBFile qbFile, Bundle params) {
-//
-//                int uploadedFileID = qbFile.getId();
-//                QBUser qbUser = DataHolder.getDataHolder().getSignInQbUser();
-//
-//                // Connect image to user
-//                qbUser.setFileId(uploadedFileID);
-//
-//                QBUsers.updateUser(qbUser, new QBEntityCallbackImpl<QBUser>() {
-//                    @Override
-//                    public void onSuccess(QBUser user, Bundle args) {
-//                        onThread = false;
-//                        publishProgress();
-//                        DialogUtils.showLong(context, getString(R.string.success_user_updated));
-//                    }
-//
-//                    @Override
-//                    public void onError(List<String> errors) {
-//                        onThread = false;
-//                        publishProgress();
-//                        DialogUtils.showLong(context, errors.get(0));
-//                    }
-//                });
-//            }
-//
-//            @Override
-//            public void onError(List<String> errors) {
-//                onThread = false;
-//                publishProgress();
-//                DialogUtils.showLong(context, errors.get(0));
-//
-//            }
-//        }, new QBProgressCallback() {
-//            @Override
-//            public void onProgressUpdate(int progress) {
-//
-//
-//            }
-//        });
+        QBContent.uploadFileTask(imageFile, false, null, new QBEntityCallbackImpl<QBFile>() {
+            @Override
+            public void onSuccess(QBFile qbFile, Bundle params) {
 
+                int uploadedFileID = qbFile.getId();
+                User user = DataHolder.getDataHolder().getSignInUser();
+
+                // Connect image to user
+                user.setBlobId(uploadedFileID);
+
+                updateUserTask = new UpdateUserTask();
+                updateUserTask.start(null, user);
+
+            }
+
+            @Override
+            public void onError(List<String> errors) {
+                onThread = false;
+                publishProgress();
+                DialogUtils.showLong(context, errors.get(0));
+
+            }
+        }, new QBProgressCallback() {
+            @Override
+            public void onProgressUpdate(int progress) {
+
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onSuccess(BaseResponse response) {
+        if (response instanceof UpdateUserResponse) {
+            User user = ((UpdateUserResponse) response).getUser();
+
+            onThread = false;
+            publishProgress();
+
+            if (!"".equals(password.getText().toString())) {
+                user.setPassword(password.getText().toString());
+            }
+            DataHolder.getDataHolder().setSignInUser(user);
+            DialogUtils.showLong(context, getResources().getString(
+                    R.string.success_user_updated));
+
+        }
+
+    }
+
+    @Override
+    public void onFailed(String error) {
+        onThread = false;
+        publishProgress();
+        DialogUtils.showLong(context, error);
+    }
+
+    @Override
+    public void onFinish(InputStream inputStream) {
+        new AsyncTask<InputStream, Void, Bitmap>() {
+            @Override
+            protected Bitmap doInBackground(InputStream... params) {
+                return BitmapFactory.decodeStream(params[0]);
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bitmap) {
+                photo.setImageBitmap(bitmap);
+                progressBarImage.setVisibility(View.GONE);
+                changeAvatar.setEnabled(true);
+            }
+        }.execute(inputStream);
+    }
+
+    @Override
+    public void onError(String error) {
+        progressBarImage.setVisibility(View.GONE);
+        changeAvatar.setEnabled(true);
     }
 }

@@ -63,9 +63,9 @@ public class SignUpActivity extends BaseActivity implements TaskCallback {
             onThread = true;
             publishProgress();
 
-            User user = new User.Builder()
-                    .setLogin(login.getText().toString())
-                    .setPassword(password.getText().toString()).build();
+            User user = new User();
+            user.setLogin(login.getText().toString());
+            user.setPassword(password.getText().toString());
 
             signUpTask = new SignUpTask();
             signUpTask.start(this, user);
@@ -108,6 +108,7 @@ public class SignUpActivity extends BaseActivity implements TaskCallback {
 //        setResult(RESULT_OK);
         if (response instanceof SignUpResponse) {
             User user = ((SignUpResponse) response).getUser();
+            user.setPassword(password.getText().toString());
 
             DataHolder.getDataHolder().setSignInUser(user);
 
@@ -115,24 +116,7 @@ public class SignUpActivity extends BaseActivity implements TaskCallback {
         } else if (response instanceof SignInResponse) {
             SignInResponse signInResponse = (SignInResponse) response;
 
-            User user = new User.Builder().setId(signInResponse.getId())
-                    .setOwnerId(signInResponse.getOwnerId())
-                    .setLogin(signInResponse.getLogin())
-                    .setPassword(password.getText().toString())
-                    .setBlobId(signInResponse.getBlobId())
-                    .setCreatedAt(signInResponse.getCreatedAt())
-                    .setUpdatedAt(signInResponse.getUpdatedAt())
-                    .setFullName(signInResponse.getFullName())
-                    .setEmail(signInResponse.getEmail())
-                    .setPhone(signInResponse.getPhone())
-                    .setWebsite(signInResponse.getWebsite())
-                    .setCustomData(signInResponse.getCustomData())
-                    .setExternalUserId(signInResponse.getExternalUserId())
-                    .setFacebookId(signInResponse.getFacebookId())
-                    .setTwitterId(signInResponse.getTwitterId())
-                    .setLastRequestAt(signInResponse.getLastRequestAt())
-                    .setTagList(signInResponse.getTagList())
-                    .setUserTags(signInResponse.getUserTags()).build();
+            User user = signInResponse.getUser();
 
             user.setPassword(password.getText().toString());
             DataHolder.getDataHolder().setSignInUser(user);

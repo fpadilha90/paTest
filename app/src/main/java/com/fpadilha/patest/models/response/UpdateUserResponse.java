@@ -1,12 +1,11 @@
 package com.fpadilha.patest.models.response;
 
 import com.fpadilha.patest.models.User;
-import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by fpadilha on 15/12/2015.
  */
-public class SignInResponse extends BaseResponse {
+public class UpdateUserResponse extends BaseResponse {
 
     private User user;
 

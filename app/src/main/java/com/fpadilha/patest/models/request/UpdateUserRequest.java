@@ -1,13 +1,11 @@
-package com.fpadilha.patest.models.response;
+package com.fpadilha.patest.models.request;
 
 import com.fpadilha.patest.models.User;
-import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by fpadilha on 15/12/2015.
  */
-public class SignInResponse extends BaseResponse {
-
+public class UpdateUserRequest {
     private User user;
 
     public User getUser() {
@@ -17,5 +15,4 @@ public class SignInResponse extends BaseResponse {
     public void setUser(User user) {
         this.user = user;
     }
-
 }

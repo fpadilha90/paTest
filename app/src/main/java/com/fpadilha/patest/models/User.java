@@ -7,27 +7,27 @@ import com.google.gson.annotations.SerializedName;
  */
 public class User {
 
-    private User(Builder builder) {
-        this.id = builder.id ;
-        this.ownerId = builder.ownerId;
-        this.fullName = builder.fullName;
-        this.email = builder.email;
-        this.login = builder.login;
-        this.phone = builder.phone;
-        this.website = builder.website;
-        this.password = builder.password;
-        this.oldPassword = builder.oldPassword;
-        this.createdAt = builder.createdAt;
-        this.updatedAt = builder.updatedAt;
-        this.lastRequestAt = builder.lastRequestAt;
-        this.externalUserId = builder.externalUserId;
-        this.facebookId = builder.facebookId;
-        this.twitterId = builder.twitterId;
-        this.blobId = builder.blobId;
-        this.customData = builder.customData;
-        this.userTags = builder.userTags;
-        this.tagList = builder.tagList;
-    }
+//    private User(Builder builder) {
+//        this.id = builder.id ;
+//        this.ownerId = builder.ownerId;
+//        this.fullName = builder.fullName;
+//        this.email = builder.email;
+//        this.login = builder.login;
+//        this.phone = builder.phone;
+//        this.website = builder.website;
+//        this.password = builder.password;
+//        this.oldPassword = builder.oldPassword;
+//        this.createdAt = builder.createdAt;
+//        this.updatedAt = builder.updatedAt;
+//        this.lastRequestAt = builder.lastRequestAt;
+//        this.externalUserId = builder.externalUserId;
+//        this.facebookId = builder.facebookId;
+//        this.twitterId = builder.twitterId;
+//        this.blobId = builder.blobId;
+//        this.customData = builder.customData;
+//        this.userTags = builder.userTags;
+//        this.tagList = builder.tagList;
+//    }
 
     private Integer id;
     @SerializedName("owner_id")
@@ -53,7 +53,7 @@ public class User {
     @SerializedName("twitter_id")
     private String twitterId;
     @SerializedName("blob_id")
-    private String blobId;
+    private Integer blobId;
     @SerializedName("custom_data")
     private String customData;
     @SerializedName("user_tags")
@@ -181,11 +181,11 @@ public class User {
         this.twitterId = twitterId;
     }
 
-    public String getBlobId() {
+    public Integer getBlobId() {
         return blobId;
     }
 
-    public void setBlobId(String blobId) {
+    public void setBlobId(Integer blobId) {
         this.blobId = blobId;
     }
 
@@ -213,129 +213,129 @@ public class User {
         this.tagList = tagList;
     }
 
-    public static class Builder {
-
-        public Builder() {
-        }
-
-        public User build() {
-            return new User(this);
-        }
-
-        private Integer id;
-        private Integer ownerId;
-        private String fullName;
-        private String email;
-        private String login;
-        private String phone;
-        private String website;
-        private String password;
-        private String oldPassword;
-        private String createdAt;
-        private String updatedAt;
-        private String lastRequestAt;
-        private Integer externalUserId;
-        private String facebookId;
-        private String twitterId;
-        private String blobId;
-        private String customData;
-        private String userTags;
-        private String tagList;
-
-        public User.Builder setId(Integer id) {
-            this.id = id;
-            return this;
-        }
-
-        public User.Builder setOwnerId(Integer ownerId) {
-            this.ownerId = ownerId;
-            return this;
-        }
-
-        public User.Builder setFullName(String fullName) {
-            this.fullName = fullName;
-            return this;
-        }
-
-        public User.Builder setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public User.Builder setLogin(String login) {
-            this.login = login;
-            return this;
-        }
-
-        public User.Builder setPhone(String phone) {
-            this.phone = phone;
-            return this;
-        }
-
-        public User.Builder setWebsite(String website) {
-            this.website = website;
-            return this;
-        }
-
-        public User.Builder setPassword(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public User.Builder setOldPassword(String oldPassword) {
-            this.oldPassword = oldPassword;
-            return this;
-        }
-
-        public User.Builder setCreatedAt(String createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public User.Builder setUpdatedAt(String updatedAt) {
-            this.updatedAt = updatedAt;
-            return this;
-        }
-
-        public User.Builder setLastRequestAt(String lastRequestAt) {
-            this.lastRequestAt = lastRequestAt;
-            return this;
-        }
-
-        public User.Builder setExternalUserId(Integer externalUserId) {
-            this.externalUserId = externalUserId;
-            return this;
-        }
-
-        public User.Builder setFacebookId(String facebookId) {
-            this.facebookId = facebookId;
-            return this;
-        }
-
-        public User.Builder setTwitterId(String twitterId) {
-            this.twitterId = twitterId;
-            return this;
-        }
-
-        public User.Builder setBlobId(String blobId) {
-            this.blobId = blobId;
-            return this;
-        }
-
-        public User.Builder setCustomData(String customData) {
-            this.customData = customData;
-            return this;
-        }
-
-        public User.Builder setUserTags(String userTags) {
-            this.userTags = userTags;
-            return this;
-        }
-
-        public User.Builder setTagList(String tagList) {
-            this.tagList = tagList;
-            return this;
-        }
-    }
+//    public static class Builder {
+//
+//        public Builder() {
+//        }
+//
+//        public User build() {
+//            return new User(this);
+//        }
+//
+//        private Integer id;
+//        private Integer ownerId;
+//        private String fullName;
+//        private String email;
+//        private String login;
+//        private String phone;
+//        private String website;
+//        private String password;
+//        private String oldPassword;
+//        private String createdAt;
+//        private String updatedAt;
+//        private String lastRequestAt;
+//        private Integer externalUserId;
+//        private String facebookId;
+//        private String twitterId;
+//        private Integer blobId;
+//        private String customData;
+//        private String userTags;
+//        private String tagList;
+//
+//        public User.Builder setId(Integer id) {
+//            this.id = id;
+//            return this;
+//        }
+//
+//        public User.Builder setOwnerId(Integer ownerId) {
+//            this.ownerId = ownerId;
+//            return this;
+//        }
+//
+//        public User.Builder setFullName(String fullName) {
+//            this.fullName = fullName;
+//            return this;
+//        }
+//
+//        public User.Builder setEmail(String email) {
+//            this.email = email;
+//            return this;
+//        }
+//
+//        public User.Builder setLogin(String login) {
+//            this.login = login;
+//            return this;
+//        }
+//
+//        public User.Builder setPhone(String phone) {
+//            this.phone = phone;
+//            return this;
+//        }
+//
+//        public User.Builder setWebsite(String website) {
+//            this.website = website;
+//            return this;
+//        }
+//
+//        public User.Builder setPassword(String password) {
+//            this.password = password;
+//            return this;
+//        }
+//
+//        public User.Builder setOldPassword(String oldPassword) {
+//            this.oldPassword = oldPassword;
+//            return this;
+//        }
+//
+//        public User.Builder setCreatedAt(String createdAt) {
+//            this.createdAt = createdAt;
+//            return this;
+//        }
+//
+//        public User.Builder setUpdatedAt(String updatedAt) {
+//            this.updatedAt = updatedAt;
+//            return this;
+//        }
+//
+//        public User.Builder setLastRequestAt(String lastRequestAt) {
+//            this.lastRequestAt = lastRequestAt;
+//            return this;
+//        }
+//
+//        public User.Builder setExternalUserId(Integer externalUserId) {
+//            this.externalUserId = externalUserId;
+//            return this;
+//        }
+//
+//        public User.Builder setFacebookId(String facebookId) {
+//            this.facebookId = facebookId;
+//            return this;
+//        }
+//
+//        public User.Builder setTwitterId(String twitterId) {
+//            this.twitterId = twitterId;
+//            return this;
+//        }
+//
+//        public User.Builder setBlobId(Integer blobId) {
+//            this.blobId = blobId;
+//            return this;
+//        }
+//
+//        public User.Builder setCustomData(String customData) {
+//            this.customData = customData;
+//            return this;
+//        }
+//
+//        public User.Builder setUserTags(String userTags) {
+//            this.userTags = userTags;
+//            return this;
+//        }
+//
+//        public User.Builder setTagList(String tagList) {
+//            this.tagList = tagList;
+//            return this;
+//        }
+//    }
 
 }

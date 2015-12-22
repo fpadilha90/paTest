@@ -51,11 +51,12 @@ public class SignInActivity extends BaseActivity implements TaskCallback {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.signIn:
+                login.setText("fpadilha90");
+                password.setText("acbedfgh");
                 if (validate()) {
-
-                    User user = new User.Builder()
-                            .setLogin(login.getText().toString())
-                            .setPassword(password.getText().toString()).build();
+                    User user = new User();
+                    user.setLogin(login.getText().toString());
+                    user.setPassword(password.getText().toString());
 
                     // Sign in application with user
                     signInTask = new SignInTask();
@@ -94,25 +95,7 @@ public class SignInActivity extends BaseActivity implements TaskCallback {
         if (response instanceof SignInResponse) {
 
             SignInResponse signInResponse = (SignInResponse) response;
-            User user = new User.Builder().setId(signInResponse.getId())
-                    .setOwnerId(signInResponse.getOwnerId())
-                    .setLogin(signInResponse.getLogin())
-                    .setPassword(password.getText().toString())
-                    .setBlobId(signInResponse.getBlobId())
-                    .setCreatedAt(signInResponse.getCreatedAt())
-                    .setUpdatedAt(signInResponse.getUpdatedAt())
-                    .setFullName(signInResponse.getFullName())
-                    .setEmail(signInResponse.getEmail())
-                    .setPhone(signInResponse.getPhone())
-                    .setWebsite(signInResponse.getWebsite())
-                    .setCustomData(signInResponse.getCustomData())
-                    .setExternalUserId(signInResponse.getExternalUserId())
-                    .setFacebookId(signInResponse.getFacebookId())
-                    .setTwitterId(signInResponse.getTwitterId())
-                    .setLastRequestAt(signInResponse.getLastRequestAt())
-                    .setTagList(signInResponse.getTagList())
-                    .setUserTags(signInResponse.getUserTags()).build();
-
+            User user = signInResponse.getUser();
             DataHolder.getDataHolder().setSignInUser(user);
 
             startActivity(new Intent(context, UpdateUserActivity.class));
